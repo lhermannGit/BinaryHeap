@@ -3,6 +3,7 @@ Binary Heap implementation using generics.
 ToDo:
 	Find fastest way to search for an item.
 	Comparison Function vs overloaded ">" and "<" operator functionality
+	TEST
 */
 
 #ifndef _BINARYHEAP
