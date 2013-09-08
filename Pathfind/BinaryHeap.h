@@ -22,7 +22,7 @@ template <typename T>
 class BinaryHeap
 {
 private:
-	std::vector<T> m_heap;
+	std::vector<T*> m_heap;
 	bool (*cmp_func)(T const&,T const&);
 
 	void heapifyDown(size_t pos);
@@ -42,7 +42,7 @@ public:
 
 	T pop();
 
-	void push(T const& elem);
+	void push(T& elem);
 	
 	bool isEmpty(){ return m_heap.empty() };
 
@@ -56,7 +56,7 @@ BinaryHeap<T>::BinaryHeap(bool (*f)(T const&,T const&)){
 
 template <typename T>
 T BinaryHeap<T>::pop(){
-	T result = m_heap.front();
+	T result = *m_heap.front();
 	m_heap[0] = m_heap.back();
 	m_heap.pop_back();
 	if (m_heap.size() > 0)
@@ -65,8 +65,8 @@ T BinaryHeap<T>::pop(){
 }
 
 template <typename T>
-void BinaryHeap<T>::push(T const& elem){
-	m_heap.push_back(elem);
+void BinaryHeap<T>::push(T& elem){
+	m_heap.push_back(&elem);
 	heapifyUp(m_heap.size()-1);
 }
 
@@ -76,19 +76,19 @@ void BinaryHeap<T>::heapifyDown(size_t pos){
 	while (true) {
 		tpos = pos;
 		if (2 * pos + 2 <= m_heap.size() - 1) {
-			if (cmp_func(m_heap[2 * pos + 1],
-					m_heap[pos]))
+			if (cmp_func(*m_heap[2 * pos + 1],
+					*m_heap[pos]))
 					tpos = 2 * pos + 1;
-			if (cmp_func(m_heap[2 * pos + 2],
-						m_heap[tpos]))
+			if (cmp_func(*m_heap[2 * pos + 2],
+						*m_heap[tpos]))
 					tpos = 2 * pos + 2;
 		} else if (2 * pos + 1 <= m_heap.size() - 1) {
-			if (cmp_func(m_heap[2 * pos + 1],
-						m_heap[pos]))
+			if (cmp_func(*m_heap[2 * pos + 1],
+					*m_heap[pos]))
 					tpos = 2 * pos + 1;
 		}
 		if (pos != tpos) {
-			T temp = m_heap[pos];
+			T* temp = m_heap[pos];
 			m_heap[pos] = m_heap[tpos];
 			m_heap[tpos] = temp;
 		} else
@@ -100,8 +100,8 @@ template <typename T>
 void BinaryHeap<T>::heapifyUp(size_t pos){
 	while (pos > 0) {
 		size_t newpos = (size_t) floor((pos - 1) / 2);
-		if (cmp_func(m_heap[pos], m_heap[newpos])) {
-			T temp = m_heap[pos];
+		if (cmp_func(*m_heap[pos], *m_heap[newpos])) {
+			T* temp = m_heap[pos];
 			m_heap[pos] = m_heap[newpos];
 			m_heap[newpos] = temp;
 			pos = newpos;
