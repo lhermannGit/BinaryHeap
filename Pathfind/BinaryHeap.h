@@ -83,6 +83,7 @@ void BinaryHeap<T>::heapifyDown(uint pos){
 			const T* temp = _heap[pos];
 			_heap[pos] = _heap[tpos];
 			_heap[tpos] = temp;
+			pos = tpos;
 		} else
 			return;
 	}
