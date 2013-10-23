@@ -100,7 +100,7 @@ void BinaryHeap<T>::heapifyDown(uint pos){
 					tpos = 2 * pos;
 		}
 		if (pos != tpos) {
-			const T* temp = _heap[pos];
+			T* temp = _heap[pos];
 			_heap[pos] = _heap[tpos];
 			_heap[tpos] = temp;
 			pos = tpos;
