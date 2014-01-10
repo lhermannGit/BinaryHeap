@@ -30,13 +30,16 @@ public:
     BinaryHeap(Order order = MIN);
 	//virtual ~BinaryHeap();
 
-	const T* pop();
+	T* pop();
 
 	void push(T& elem);
 	void push(std::vector<T>& vector);
 
-    void clear(){ _heap.clear(); }; 
-	
+    void update(T& elem);
+
+    void clear(){ _heap.clear(); };
+
+    bool contains(T const& elem);	
 	bool isEmpty() const { return _heap.empty() == nullptr; };
 };
 
@@ -61,8 +64,8 @@ BinaryHeap<T>::BinaryHeap(Order order){
 };
 
 template <typename T>
-const T* BinaryHeap<T>::pop(){
-	const T* result = _heap[1];
+T* BinaryHeap<T>::pop(){
+	T* result = _heap[1];
 	_heap[1] = _heap.back();
 	_heap.pop_back();
 	if (_heap.size() > 1)
@@ -83,6 +86,16 @@ void BinaryHeap<T>::push(std::vector<T>& vector){
 }
 
 template <typename T>
+void BinaryHeap<T>::update(T& elem){
+    uint pos = 1;
+    for (auto _elem : _heap)
+        if (*_elem == elem){
+            heapifyDown(pos);
+            heapifyUp(pos);
+        }
+}
+
+template <typename T>
 void BinaryHeap<T>::heapifyDown(uint pos){
 	uint tpos;
 	while (true) {
@@ -100,10 +113,10 @@ void BinaryHeap<T>::heapifyDown(uint pos){
 					tpos = 2 * pos;
 		}
 		if (pos != tpos) {
-			T* temp = _heap[pos];
-			_heap[pos] = _heap[tpos];
-			_heap[tpos] = temp;
-			pos = tpos;
+            T* temp = std::move(_heap[pos]);
+			_heap[pos] = std::move(_heap[tpos]);
+			_heap[tpos] = std::move(temp);
+            pos = tpos;
 		} else
             return;
 	}
@@ -112,8 +125,8 @@ void BinaryHeap<T>::heapifyDown(uint pos){
 template <typename T>
 void BinaryHeap<T>::heapifyUp(uint pos){
 	while (pos > 1) {
-		uint newpos = (uint) floor(pos / 2);
-		if (cmp_func(*_heap[pos], *_heap[newpos])) {
+		uint newpos = (uint) fmodf(pos/2,1.0f);
+        if (cmp_func(*_heap[pos], *_heap[newpos])) {
 			T* temp = _heap[pos];
 			_heap[pos] = _heap[newpos];
 			_heap[newpos] = temp;
